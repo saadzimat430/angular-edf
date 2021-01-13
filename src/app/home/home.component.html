@@ -1,1 +1,5 @@
-<p>{{ x }}</p>
+<div *ngFor="let marketPrice of marketArray.slice(0, 4)">
+    <p>date: {{ marketPrice.dates }}</p>
+    <p>be: {{ marketPrice.be }}</p>
+    <p>ch: {{ marketPrice.ch }}</p>
+</div>

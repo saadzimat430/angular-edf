@@ -12,6 +12,10 @@ export class HomeComponent implements OnInit {
   marketArray = new Array<MarketResult>();
 
   constructor(private http: HttpClient) {
+
+  }
+
+  ngOnInit(): void {
     this.http.get('assets/market.csv', { responseType: 'text' })
       .subscribe(
         data => {
@@ -40,14 +44,10 @@ export class HomeComponent implements OnInit {
       );
   }
 
-  ngOnInit(): void {
-
-  }
-
   public extractDate(date: string) {
     return new Date(
-      +date.split(" - ")[0].substring(0,4),
-      +date.split(" - ")[0].substring(4,6) - 1,
+      +date.split(" - ")[0].substring(0, 4),
+      +date.split(" - ")[0].substring(4, 6) - 1,
       +date.split(" - ")[0].substring(6),
       +date.split(" - ")[1].substring(1)
     );
