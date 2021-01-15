@@ -7,7 +7,7 @@ import { MarketRatesService } from '../services/market-rates.service';
   selector: 'app-chart',
   template: `
     <!-- <button (click)="add()">Add Point!</button> -->
-    <div [chart]="chart" style="height: 100%;"></div>
+    <div [chart]="chart"></div>
   `,
   styleUrls: ['./chart.component.css']
 })
@@ -38,7 +38,8 @@ export class ChartComponent implements OnInit {
 
         this.chart = new Chart({
           chart: {
-            type: 'line'
+            type: 'line',
+            height: '600px'
           },
           title: {
             text: 'Market Rates'
