@@ -10,7 +10,8 @@ export class MarketResult {
     fr: number;
     nl: number;
 
-    constructor(dates: Date, be: number, ch: number, cz: number, de_at: number, dk1: number, dk2: number, es: number, fr: number, nl: number) {
+    constructor(dates: Date, be: number, ch: number, cz: number, de_at: number,
+        dk1: number, dk2: number, es: number, fr: number, nl: number) {
         this.dates = dates;
         this.be = be;
         this.ch = ch;

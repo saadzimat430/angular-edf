@@ -7,7 +7,7 @@ import { MarketRatesService } from '../services/market-rates.service';
   selector: 'app-chart',
   template: `
     <!-- <button (click)="add()">Add Point!</button> -->
-    <div [chart]="chart"></div>
+    <div [chart]="chart" style="height: 100%;"></div>
   `,
   styleUrls: ['./chart.component.css']
 })
@@ -19,6 +19,7 @@ export class ChartComponent implements OnInit {
     this.market.getMarketRates().subscribe(
       data => {
         let csvToRowArray = data.split("\n");
+
         for (let index = 1; index < csvToRowArray.length - 1; index++) {
           let row = csvToRowArray[index].split(",");
           // JSON.parse to solve the problem of backslash and \"
@@ -57,14 +58,64 @@ export class ChartComponent implements OnInit {
           ],
           series: [
             {
-              name: 'BE',
+              name: 'Belgium',
               type: 'line',
               data: this.marketArray.map(rate => rate.be),
+              pointStart: Date.UTC(2016, 12, 4, 1),
+              // 3600000 ms is 1 hour
+              pointInterval: 3600000
+            },
+            {
+              name: 'Switzerland',
+              type: 'line',
+              data: this.marketArray.map(rate => rate.ch),
               pointStart: Date.UTC(2016, 12, 4, 1),
               pointInterval: 3600000
             },
             {
-              name: 'NL',
+              name: 'Czech',
+              type: 'line',
+              data: this.marketArray.map(rate => rate.cz),
+              pointStart: Date.UTC(2016, 12, 4, 1),
+              pointInterval: 3600000
+            },
+            {
+              name: 'Germany_Austria',
+              type: 'line',
+              data: this.marketArray.map(rate => rate.de_at),
+              pointStart: Date.UTC(2016, 12, 4, 1),
+              pointInterval: 3600000
+            },
+            {
+              name: 'Denmark 1',
+              type: 'line',
+              data: this.marketArray.map(rate => rate.dk1),
+              pointStart: Date.UTC(2016, 12, 4, 1),
+              pointInterval: 3600000
+            },
+            {
+              name: 'Denmark 2',
+              type: 'line',
+              data: this.marketArray.map(rate => rate.dk2),
+              pointStart: Date.UTC(2016, 12, 4, 1),
+              pointInterval: 3600000
+            },
+            {
+              name: 'Spain',
+              type: 'line',
+              data: this.marketArray.map(rate => rate.es),
+              pointStart: Date.UTC(2016, 12, 4, 1),
+              pointInterval: 3600000
+            },
+            {
+              name: 'France',
+              type: 'line',
+              data: this.marketArray.map(rate => rate.fr),
+              pointStart: Date.UTC(2016, 12, 4, 1),
+              pointInterval: 3600000
+            },
+            {
+              name: 'Netherlands',
               type: 'line',
               data: this.marketArray.map(rate => rate.nl),
               pointStart: Date.UTC(2016, 12, 4, 1),
