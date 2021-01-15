@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MarketResult } from '../common/market-result';
 import { MarketRatesService } from '../services/market-rates.service';

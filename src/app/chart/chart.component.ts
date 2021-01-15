@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Chart } from 'angular-highcharts';
-import * as Highcharts from 'highcharts';
 import { MarketResult } from '../common/market-result';
 import { MarketRatesService } from '../services/market-rates.service';
 
@@ -13,17 +12,18 @@ import { MarketRatesService } from '../services/market-rates.service';
   styleUrls: ['./chart.component.css']
 })
 export class ChartComponent implements OnInit {
-  marketArray: Array<MarketResult> = [];
+  marketArray = new Array<MarketResult>();
+  chart: Chart;
 
   constructor(private market: MarketRatesService) {
-    market.getMarketRates().subscribe(
+    this.market.getMarketRates().subscribe(
       data => {
         let csvToRowArray = data.split("\n");
         for (let index = 1; index < csvToRowArray.length - 1; index++) {
           let row = csvToRowArray[index].split(",");
           // JSON.parse to solve the problem of backslash and \"
           this.marketArray.push(new MarketResult(
-            market.extractDate(JSON.parse(row[0])),
+            this.market.extractDate(JSON.parse(row[0])),
             +row[1],
             +row[2],
             +row[3],
@@ -34,50 +34,51 @@ export class ChartComponent implements OnInit {
             +row[8],
             +row[9]));
         }
-        console.log(this.marketArray[0]);
+
+        this.chart = new Chart({
+          chart: {
+            type: 'line'
+          },
+          title: {
+            text: 'Market Rates'
+          },
+          credits: {
+            enabled: false
+          },
+          xAxis: [
+            {
+              type: 'datetime',
+              labels: {
+                format: '{value:%Y-%m-%d-%HH}',
+                rotation: -45,
+                align: 'center'
+              }
+            }
+          ],
+          series: [
+            {
+              name: 'BE',
+              type: 'line',
+              data: this.marketArray.map(rate => rate.be),
+              pointStart: Date.UTC(2016, 12, 4, 1),
+              pointInterval: 3600000
+            },
+            {
+              name: 'NL',
+              type: 'line',
+              data: this.marketArray.map(rate => rate.nl),
+              pointStart: Date.UTC(2016, 12, 4, 1),
+              pointInterval: 3600000
+            }
+          ]
+        });
       },
       error => {
         console.log(error);
       }
     )
-    
+
   }
-
-  chart = new Chart({
-    chart: {
-      type: 'line'
-    },
-    title: {
-      text: 'Market Rates'
-    },
-    credits: {
-      enabled: false
-    },
-    xAxis: [
-      {
-        type: 'datetime',
-        labels: {
-            format: '{value:%Y-%m-%d}',
-            rotation: 0,
-            align: 'center'
-        }
-      }
-    ],
-    series: [
-      {
-        name: 'Line 1',
-        type: 'line',
-        data: [1, 100, 53, 42],
-        pointStart: Date.UTC(2016, 12, 4, 1),
-        pointInterval: 3600000
-      }
-    ]
-  });
-
-  // add point to chart serie
-  /* add() {
-    this.chart.addPoint(Math.floor(Math.random() * 10));
-  } */
 
   ngOnInit(): void {
 
