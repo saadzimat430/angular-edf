@@ -12,7 +12,8 @@ import { ChartModule } from 'angular-highcharts';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
-  { path: 'chart', component: ChartComponent }
+  { path: 'chart', component: ChartComponent },
+  { path: '',   redirectTo: 'home', pathMatch: 'full' }
 ];
 
 @NgModule({
