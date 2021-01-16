@@ -9,11 +9,17 @@ import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { ChartComponent } from './chart/chart.component';
 import { ChartModule } from 'angular-highcharts';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'chart', component: ChartComponent },
-  { path: '',   redirectTo: 'home', pathMatch: 'full' }
+  { path: '', redirectTo: 'chart', pathMatch: 'full' }
 ];
 
 @NgModule({
@@ -27,7 +33,12 @@ const routes: Routes = [
     AppRoutingModule,
     RouterModule.forRoot(routes),
     HttpClientModule,
-    ChartModule
+    ChartModule,
+    NoopAnimationsModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatFormFieldModule,
+    MatInputModule
   ],
   providers: [],
   bootstrap: [AppComponent]

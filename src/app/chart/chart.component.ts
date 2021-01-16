@@ -2,18 +2,31 @@ import { Component, OnInit } from '@angular/core';
 import { Chart } from 'angular-highcharts';
 import { MarketResult } from '../common/market-result';
 import { MarketRatesService } from '../services/market-rates.service';
+import { countries } from '../../assets/countries';
 
 @Component({
   selector: 'app-chart',
   template: `
-    <!-- <button (click)="add()">Add Point!</button> -->
-    <div [chart]="chart"></div>
+    <div style="margin-top: 50px;" [chart]="chart"></div>
+    <div style="display: flex; justify-content: center; margin-top: 50px;">
+      <mat-form-field appearance="fill" style="width: 400px;">
+        <mat-label>Enter a date range</mat-label>
+        <mat-date-range-input [rangePicker]="picker">
+          <input matStartDate placeholder="Start date" (dateChange)="updateStartDate($event)">
+          <input matEndDate placeholder="End date" (dateChange)="updateEndDate($event)">
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
+    </div>
   `,
   styleUrls: ['./chart.component.css']
 })
 export class ChartComponent implements OnInit {
   marketArray = new Array<MarketResult>();
   chart: Chart;
+  startDate: Date;
+  endDate: Date;
 
   constructor(private market: MarketRatesService) {
     this.market.getMarketRates().subscribe(
@@ -44,9 +57,6 @@ export class ChartComponent implements OnInit {
           title: {
             text: 'Market Rates'
           },
-          credits: {
-            enabled: false
-          },
           xAxis: [
             {
               type: 'datetime',
@@ -57,72 +67,16 @@ export class ChartComponent implements OnInit {
               }
             }
           ],
-          series: [
+          series: countries.map(x => JSON.parse(JSON.stringify(
             {
-              name: 'Belgium',
+              name: x.country,
               type: 'line',
-              data: this.marketArray.map(rate => rate.be),
-              pointStart: Date.UTC(2016, 12, 4, 1),
+              data: this.marketArray.map(rate => rate[x.code]),
+              pointStart: this.startDate != null ? this.startDate : Date.UTC(2016, 12, 4, 1),
               // 3600000 ms is 1 hour
-              pointInterval: 3600000
-            },
-            {
-              name: 'Switzerland',
-              type: 'line',
-              data: this.marketArray.map(rate => rate.ch),
-              pointStart: Date.UTC(2016, 12, 4, 1),
-              pointInterval: 3600000
-            },
-            {
-              name: 'Czech',
-              type: 'line',
-              data: this.marketArray.map(rate => rate.cz),
-              pointStart: Date.UTC(2016, 12, 4, 1),
-              pointInterval: 3600000
-            },
-            {
-              name: 'Germany_Austria',
-              type: 'line',
-              data: this.marketArray.map(rate => rate.de_at),
-              pointStart: Date.UTC(2016, 12, 4, 1),
-              pointInterval: 3600000
-            },
-            {
-              name: 'Denmark 1',
-              type: 'line',
-              data: this.marketArray.map(rate => rate.dk1),
-              pointStart: Date.UTC(2016, 12, 4, 1),
-              pointInterval: 3600000
-            },
-            {
-              name: 'Denmark 2',
-              type: 'line',
-              data: this.marketArray.map(rate => rate.dk2),
-              pointStart: Date.UTC(2016, 12, 4, 1),
-              pointInterval: 3600000
-            },
-            {
-              name: 'Spain',
-              type: 'line',
-              data: this.marketArray.map(rate => rate.es),
-              pointStart: Date.UTC(2016, 12, 4, 1),
-              pointInterval: 3600000
-            },
-            {
-              name: 'France',
-              type: 'line',
-              data: this.marketArray.map(rate => rate.fr),
-              pointStart: Date.UTC(2016, 12, 4, 1),
-              pointInterval: 3600000
-            },
-            {
-              name: 'Netherlands',
-              type: 'line',
-              data: this.marketArray.map(rate => rate.nl),
-              pointStart: Date.UTC(2016, 12, 4, 1),
-              pointInterval: 3600000
+              pointInterval: this.getTimeInterval() != null ? this.getTimeInterval() : 3600000
             }
-          ]
+          )))
         });
       },
       error => {
@@ -130,10 +84,32 @@ export class ChartComponent implements OnInit {
       }
     )
 
+    console.log(this.getTimeInterval());
+
   }
 
   ngOnInit(): void {
 
+  }
+
+  updateStartDate(dateObject): void {
+    if (!!dateObject.value) {
+      this.startDate = dateObject.value;
+    }
+  }
+
+  updateEndDate(dateObject): void {
+    if (!!dateObject.value) {
+      this.endDate = dateObject.value;
+    }
+  }
+
+  getTimeInterval(): number {
+    if (!!this.startDate && !!this.endDate) {
+      return Math.abs(this.endDate.getTime() - this.startDate.getTime());
+    } else {
+      return null;
+    }
   }
 
 }
