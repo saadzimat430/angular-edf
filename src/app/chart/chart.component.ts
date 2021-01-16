@@ -6,20 +6,7 @@ import { countries } from '../../assets/countries';
 
 @Component({
   selector: 'app-chart',
-  template: `
-    <div style="margin-top: 50px;" [chart]="chart"></div>
-    <div style="display: flex; justify-content: center; margin-top: 50px;">
-      <mat-form-field appearance="fill" style="width: 400px;">
-        <mat-label>Enter a date range</mat-label>
-        <mat-date-range-input [rangePicker]="picker">
-          <input matStartDate placeholder="Start date" (dateChange)="updateStartDate($event)">
-          <input matEndDate placeholder="End date" (dateChange)="updateEndDate($event)">
-        </mat-date-range-input>
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-date-range-picker #picker></mat-date-range-picker>
-      </mat-form-field>
-    </div>
-  `,
+  templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.css']
 })
 export class ChartComponent implements OnInit {
@@ -72,9 +59,9 @@ export class ChartComponent implements OnInit {
               name: x.country,
               type: 'line',
               data: this.marketArray.map(rate => rate[x.code]),
-              pointStart: this.startDate != null ? this.startDate : Date.UTC(2016, 12, 4, 1),
+              pointStart: Date.parse(localStorage.getItem('start-date')) != null ? Date.parse(localStorage.getItem('start-date')) : Date.UTC(2016, 12, 4, 1),
               // 3600000 ms is 1 hour
-              pointInterval: this.getTimeInterval() != null ? this.getTimeInterval() : 3600000
+              pointInterval: +localStorage.getItem('interval') != null ? +localStorage.getItem('interval') : 3600000
             }
           )))
         });
@@ -83,9 +70,6 @@ export class ChartComponent implements OnInit {
         console.log(error);
       }
     )
-
-    console.log(this.getTimeInterval());
-
   }
 
   ngOnInit(): void {
@@ -110,6 +94,17 @@ export class ChartComponent implements OnInit {
     } else {
       return null;
     }
+  }
+
+  updateDates(): void {
+    window.localStorage.setItem('start-date', this.startDate.toDateString());
+    window.localStorage.setItem('interval', this.getTimeInterval().toString());
+    window.location.reload();
+  }
+
+  resetDates(): void {
+    localStorage.clear();
+    window.location.reload();
   }
 
 }
