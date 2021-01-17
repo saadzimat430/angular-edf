@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HomeComponent } from './home/home.component';
 import { RouterModule, Routes } from '@angular/router';
 
 import { HttpClientModule } from '@angular/common/http';
@@ -18,7 +17,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 
 const routes: Routes = [
-  { path: 'home', component: HomeComponent },
   { path: 'chart', component: ChartComponent },
   { path: '', redirectTo: 'chart', pathMatch: 'full' }
 ];
@@ -26,7 +24,6 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent,
     ChartComponent
   ],
   imports: [

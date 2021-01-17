@@ -14,7 +14,7 @@ export class ChartComponent implements OnInit {
   chart: Chart;
   startDate: Date;
   endDate: Date;
-  date = new Date(Date.UTC(2016, 12, 4));
+  date = new Date(Date.UTC(2017, 11, 4));
 
   constructor(private market: MarketRatesService) {
     this.market.getMarketRates().subscribe(
@@ -36,6 +36,14 @@ export class ChartComponent implements OnInit {
             +row[8],
             +row[9]));
         }
+
+        if (!!window.localStorage.getItem('end-date')) {
+          this.marketArray = this.marketArray.filter(
+            rate => rate.dates.toISOString() < window.localStorage.getItem('end-date')
+          );
+        }
+
+        // console.log(this.marketArray);
 
         this.chart = new Chart({
           chart: {
@@ -60,9 +68,8 @@ export class ChartComponent implements OnInit {
               name: x.country,
               type: 'line',
               data: this.marketArray.map(rate => rate[x.code]),
-              pointStart: !!localStorage.getItem('start-date') ? Date.parse(localStorage.getItem('start-date')) : Date.UTC(2016, 12, 4, 1),
+              pointStart: !!localStorage.getItem('start-date') ? new Date(localStorage.getItem('start-date')).getTime() : Date.UTC(2017, 11, 4, 1),
               // 3600000 ms is 1 hour
-              // pointInterval: !!localStorage.getItem('interval') ? +localStorage.getItem('interval') : 3600000,
               pointInterval: 3600000
             }
           )))
@@ -77,7 +84,7 @@ export class ChartComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.marketArray);
+    // console.log(this.marketArray);
   }
 
   updateStartDate(dateObject): void {
@@ -89,6 +96,7 @@ export class ChartComponent implements OnInit {
   updateEndDate(dateObject): void {
     if (!!dateObject.value) {
       this.endDate = dateObject.value;
+      
     }
   }
 
@@ -101,7 +109,8 @@ export class ChartComponent implements OnInit {
   }
 
   updateDates(): void {
-    window.localStorage.setItem('start-date', this.startDate.toDateString());
+    window.localStorage.setItem('start-date', this.startDate.toISOString());
+    window.localStorage.setItem('end-date', this.endDate.toISOString());
     window.localStorage.setItem('interval', this.getTimeInterval().toString());
     window.location.reload();
   }
