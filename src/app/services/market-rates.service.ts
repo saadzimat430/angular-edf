@@ -17,9 +17,13 @@ export class MarketRatesService {
 
   public extractDate(date: string) {
     return new Date(
+      // year
       +date.split(" - ")[0].substring(0, 4),
+      // month
       +date.split(" - ")[0].substring(4, 6) - 1,
+      // day
       +date.split(" - ")[0].substring(6),
+      // hour
       +date.split(" - ")[1].substring(1)
     );
   }

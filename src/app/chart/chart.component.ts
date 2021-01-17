@@ -14,13 +14,14 @@ export class ChartComponent implements OnInit {
   chart: Chart;
   startDate: Date;
   endDate: Date;
+  date = new Date(Date.UTC(2016, 12, 4));
 
   constructor(private market: MarketRatesService) {
     this.market.getMarketRates().subscribe(
       data => {
         let csvToRowArray = data.split("\n");
 
-        for (let index = 1; index < csvToRowArray.length - 1; index++) {
+        for (let index = 1; index < csvToRowArray.length; index++) {
           let row = csvToRowArray[index].split(",");
           // JSON.parse to solve the problem of backslash and \"
           this.marketArray.push(new MarketResult(
@@ -59,9 +60,10 @@ export class ChartComponent implements OnInit {
               name: x.country,
               type: 'line',
               data: this.marketArray.map(rate => rate[x.code]),
-              pointStart: Date.parse(localStorage.getItem('start-date')) != null ? Date.parse(localStorage.getItem('start-date')) : Date.UTC(2016, 12, 4, 1),
+              pointStart: !!localStorage.getItem('start-date') ? Date.parse(localStorage.getItem('start-date')) : Date.UTC(2016, 12, 4, 1),
               // 3600000 ms is 1 hour
-              pointInterval: +localStorage.getItem('interval') != null ? +localStorage.getItem('interval') : 3600000
+              // pointInterval: !!localStorage.getItem('interval') ? +localStorage.getItem('interval') : 3600000,
+              pointInterval: 3600000
             }
           )))
         });
@@ -69,11 +71,13 @@ export class ChartComponent implements OnInit {
       error => {
         console.log(error);
       }
+
     )
+    
   }
 
   ngOnInit(): void {
-
+    console.log(this.marketArray);
   }
 
   updateStartDate(dateObject): void {
